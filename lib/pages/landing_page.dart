@@ -1,5 +1,3 @@
-// lib/pages/landing_page.dart
-
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatelessWidget {
@@ -14,12 +12,12 @@ class LandingPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+              onPressed: () => Navigator.pushNamed(context, '/login'),
               child: const Text('Login'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, '/register'),
+              onPressed: () => Navigator.pushNamed(context, '/register'),
               child: const Text('Register'),
             ),
           ],

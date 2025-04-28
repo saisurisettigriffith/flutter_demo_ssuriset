@@ -4,6 +4,7 @@ import '../view_models/auth_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -24,53 +25,59 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final vm = context.watch<AuthViewModel>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextFormField(
-              controller: _emailCtrl,
-              decoration: const InputDecoration(labelText: 'Email'),
-              validator: (v) =>
-                  (v != null && v.contains('@')) ? null : 'Enter valid email',
-            ),
-            TextFormField(
-              controller: _passCtrl,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-              validator: (v) =>
-                  (v != null && v.length >= 6) ? null : 'Min 6 chars',
-            ),
-            const SizedBox(height: 16),
-            if (vm.error != null)
-              Text(vm.error!, style: const TextStyle(color: Colors.red)),
-            ElevatedButton(
-              onPressed: vm.loading
-                  ? null
-                  : () async {
-                      if (_formKey.currentState!.validate()) {
-                        await vm.login(
-                          _emailCtrl.text.trim(),
-                          _passCtrl.text,
-                        );
-                        if (vm.error == null) {
-                          Navigator.pushReplacementNamed(context, '/home');
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context); // pop back to landing
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Login')),
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              TextFormField(
+                controller: _emailCtrl,
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: (v) =>
+                    (v != null && v.contains('@')) ? null : 'Enter valid email',
+              ),
+              TextFormField(
+                controller: _passCtrl,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (v) =>
+                    (v != null && v.length >= 6) ? null : 'Min 6 chars',
+              ),
+              const SizedBox(height: 16),
+              if (vm.error != null)
+                Text(vm.error!, style: const TextStyle(color: Colors.red)),
+              ElevatedButton(
+                onPressed: vm.loading
+                    ? null
+                    : () async {
+                        if (_formKey.currentState!.validate()) {
+                          await vm.login(
+                            _emailCtrl.text.trim(),
+                            _passCtrl.text,
+                          );
+                          if (vm.error == null) {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          }
                         }
-                      }
-                    },
-              child: vm.loading
-                  ? const CircularProgressIndicator()
-                  : const Text('Login'),
-            ),
-            TextButton(
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/register'),
-              child: const Text("Don't have an account? Register"),
-            ),
-          ]),
+                      },
+                child: vm.loading
+                    ? const CircularProgressIndicator()
+                    : const Text('Login'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/register'),
+                child: const Text("Don't have an account? Register"),
+              ),
+            ]),
+          ),
         ),
       ),
     );

@@ -9,27 +9,32 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await context.read<AuthViewModel>().logout();
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/landing',
-                (route) => false,
-              );
-            },
-          )
-        ],
-      ),
-      body: Center(
-        child: Text(
-          "Hey, ${user.displayName ?? user.email}! You’re successfully logged in.",
-          style: Theme.of(context).textTheme.headlineSmall,
+    return WillPopScope(
+      onWillPop: () async => false, // disable hardware back
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,   // ← hides back arrow
+          title: const Text('Home'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),  // default white icon
+              onPressed: () async {
+                await context.read<AuthViewModel>().logout();
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/landing',
+                  (route) => false,
+                );
+              },
+            ),
+          ],
+        ),
+        body: Center(
+          child: Text(
+            "Hey, ${user.displayName ?? user.email}! You’re successfully logged in.",
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
