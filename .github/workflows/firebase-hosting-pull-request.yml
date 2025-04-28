@@ -44,10 +44,13 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ matrix.flutter-version }}
+          channel: stable
 
       # 5) Install dependencies
       - name: Pub get
         run: flutter pub get
+        env:
+          PUB_CACHE: ~/.pub-cache
 
       # 6) Build Flutter web
       - name: Build Web
