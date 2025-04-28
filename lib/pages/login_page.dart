@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../core/validators.dart';
+import '../core/widgets/auth_text_field.dart';
+import '../core/widgets/loading_overlay.dart';
 import '../view_models/auth_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey   = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
+  final _passCtrl  = TextEditingController();
 
   @override
   void dispose() {
@@ -22,33 +24,32 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final vm = context.watch<AuthViewModel>();
+  Widget build(BuildContext ctx) {
+    final vm = ctx.watch<AuthViewModel>();
 
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context); // pop back to landing
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Login')),
+    return Stack(children: [
+      Scaffold(
+        appBar: AppBar(
+          title: const Text('Login'),
+          // explicitly disable any automatic back arrow
+          automaticallyImplyLeading: false,
+        ),
         body: Padding(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              TextFormField(
+              AuthTextField(
+                label: 'Email',
                 controller: _emailCtrl,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (v) =>
-                    (v != null && v.contains('@')) ? null : 'Enter valid email',
+                validator: validateEmail,
+                keyboardType: TextInputType.emailAddress,
               ),
-              TextFormField(
+              AuthTextField(
+                label: 'Password',
                 controller: _passCtrl,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (v) =>
-                    (v != null && v.length >= 6) ? null : 'Min 6 chars',
+                validator: validatePassword,
+                obscure: true,
               ),
               const SizedBox(height: 16),
               if (vm.error != null)
@@ -57,14 +58,13 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: vm.loading
                     ? null
                     : () async {
-                        if (_formKey.currentState!.validate()) {
-                          await vm.login(
-                            _emailCtrl.text.trim(),
-                            _passCtrl.text,
-                          );
-                          if (vm.error == null) {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          }
+                        if (!_formKey.currentState!.validate()) return;
+                        await vm.login(
+                          _emailCtrl.text.trim(),
+                          _passCtrl.text,
+                        );
+                        if (vm.error == null) {
+                          Navigator.pushReplacementNamed(ctx, '/home');
                         }
                       },
                 child: vm.loading
@@ -72,14 +72,14 @@ class _LoginPageState extends State<LoginPage> {
                     : const Text('Login'),
               ),
               TextButton(
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/register'),
+                onPressed: () => Navigator.pushNamed(ctx, '/register'),
                 child: const Text("Don't have an account? Register"),
               ),
             ]),
           ),
         ),
       ),
-    );
+      if (vm.loading) const LoadingOverlay(),
+    ]);
   }
 }

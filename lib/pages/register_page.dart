@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../core/validators.dart';
+import '../core/widgets/auth_text_field.dart';
+import '../core/widgets/loading_overlay.dart';
 import '../view_models/auth_view_model.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
-
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController();
+  final _formKey   = GlobalKey<FormState>();
+  final _nameCtrl  = TextEditingController();
   final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
+  final _passCtrl  = TextEditingController();
 
   @override
   void dispose() {
@@ -24,39 +26,38 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final vm = context.watch<AuthViewModel>();
+  Widget build(BuildContext ctx) {
+    final vm = ctx.watch<AuthViewModel>();
 
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context); // pop back to landing
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Register')),
+    return Stack(children: [
+      Scaffold(
+        appBar: AppBar(
+          title: const Text('Register'),
+          leading: BackButton(
+            onPressed: () => Navigator.pop(ctx),
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              TextFormField(
+              AuthTextField(
+                label: 'Full Name',
                 controller: _nameCtrl,
-                decoration: const InputDecoration(labelText: 'Full Name'),
-                validator: (v) =>
-                    (v != null && v.trim().isNotEmpty) ? null : 'Enter your name',
+                validator: validateName,
               ),
-              TextFormField(
+              AuthTextField(
+                label: 'Email',
                 controller: _emailCtrl,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (v) =>
-                    (v != null && v.contains('@')) ? null : 'Enter valid email',
+                validator: validateEmail,
+                keyboardType: TextInputType.emailAddress,
               ),
-              TextFormField(
+              AuthTextField(
+                label: 'Password',
                 controller: _passCtrl,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (v) =>
-                    (v != null && v.length >= 6) ? null : 'Min 6 chars',
+                validator: validatePassword,
+                obscure: true,
               ),
               const SizedBox(height: 16),
               if (vm.error != null)
@@ -65,15 +66,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 onPressed: vm.loading
                     ? null
                     : () async {
-                        if (_formKey.currentState!.validate()) {
-                          await vm.register(
-                            _nameCtrl.text.trim(),
-                            _emailCtrl.text.trim(),
-                            _passCtrl.text,
-                          );
-                          if (vm.error == null) {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          }
+                        if (!_formKey.currentState!.validate()) return;
+                        await vm.register(
+                          _nameCtrl.text.trim(),
+                          _emailCtrl.text.trim(),
+                          _passCtrl.text,
+                        );
+                        if (vm.error == null) {
+                          Navigator.pushReplacementNamed(ctx, '/home');
                         }
                       },
                 child: vm.loading
@@ -81,14 +81,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     : const Text('Register'),
               ),
               TextButton(
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/login'),
+                onPressed: () => Navigator.pushNamed(ctx, '/login'),
                 child: const Text('Already have an account? Login'),
               ),
             ]),
           ),
         ),
       ),
-    );
+      if (vm.loading) const LoadingOverlay(),
+    ]);
   }
 }
