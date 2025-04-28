@@ -16,17 +16,20 @@ class HomePage extends StatelessWidget {
           automaticallyImplyLeading: false,   // ← hides back arrow
           title: const Text('Home'),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.logout),  // default white icon
-              onPressed: () async {
-                await context.read<AuthViewModel>().logout();
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/landing',
-                  (route) => false,
-                );
-              },
+          IconButton(
+            icon: const Icon(
+              Icons.logout,
+              color: Color.fromARGB(255, 172, 172, 172),
             ),
+            onPressed: () async {
+              await context.read<AuthViewModel>().logout();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/landing',
+                (route) => false,
+              );
+            },
+          ),
           ],
         ),
         body: Center(
