@@ -34,10 +34,13 @@ jobs:
             ${{ runner.os }}-pub-cache-
 
       # 4) Install Flutter SDK (latest stable)
-      - name: Install Flutter SDK
+      - name: Install Flutter SDK (latest stable)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.22.0'
+
+      - name: Verify Flutter installation
+        run: flutter --version
 
       # 5) Install dependencies
       - name: Pub get
