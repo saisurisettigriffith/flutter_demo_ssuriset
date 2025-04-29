@@ -28,7 +28,7 @@ class App extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (ctx) => AuthViewModel(ctx.read<AuthService>()),
         child: MaterialApp(
-          title: 'Smart-Auth Demo',
+          title: 'Login Firebase',
           theme: ThemeData.from(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
