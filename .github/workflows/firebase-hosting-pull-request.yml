@@ -7,13 +7,27 @@ permissions:
   checks: write
   contents: read
   pull-requests: write
+
 jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+
     steps:
+      # 1) Checkout your code
       - uses: actions/checkout@v4
+
+      # 2) Install Flutter SDK
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.0'
+
+      - run: flutter channel stable && flutter upgrade
+
+      # 3) Build the Flutter web app
       - run: flutter pub get && flutter build web --release
+
+      # 4) Deploy to Firebase Hosting preview channel
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
