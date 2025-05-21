@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_demo_ssuriset/pages/home_page.dart';
+import 'package:flutter_demo_ssuriset/pages/login_page.dart';
+import 'package:flutter_demo_ssuriset/pages/register_page.dart';
+import 'package:flutter_demo_ssuriset/pages/splash_page.dart';
+import 'package:flutter_demo_ssuriset/services/auth_service.dart';
+import 'package:flutter_demo_ssuriset/view_models/auth_view_model.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-import 'services/auth_service.dart';
-import 'view_models/auth_view_model.dart';
-import 'pages/splash_page.dart';
-import 'pages/login_page.dart';
-import 'pages/home_page.dart';
-import 'pages/register_page.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    // If the default app already exists, just ignore
+    if (e.code != 'duplicate-app') {
+      rethrow;
+    }
+  }
+
   runApp(const App());
 }
 

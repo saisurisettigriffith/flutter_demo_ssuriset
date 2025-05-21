@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323217692512",
+    "project_id": "ssuriset-flutter-demo",
+    "storage_bucket": "ssuriset-flutter-demo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323217692512:android:0190904d1f49584854f005",
+        "android_client_info": {
+          "package_name": "com.example.flutter_demo_ssuriset"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxInx8EHp-QY3rUeWDonwb7mFWKtXHv9Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
