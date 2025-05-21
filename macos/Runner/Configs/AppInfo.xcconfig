@@ -1,5 +1,12 @@
+// Force everything to at least 10.15
+MACOSX_DEPLOYMENT_TARGET = 10.15
+
+// Include CocoaPods settings
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"   // for Debug
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig" // for Release
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig" // for Profile
+
 // Application-level settings for the Runner target.
-//
 // This may be replaced with something auto-generated from metadata (e.g., pubspec.yaml) in the
 // future. If not, the values below would default to using the project name when this becomes a
 // 'flutter create' template.
